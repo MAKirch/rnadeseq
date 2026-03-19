@@ -289,7 +289,9 @@ dir.create("differential_gene_expression/allgenes")
 dir.create("differential_gene_expression/final_gene_table")
 ```
 
-
+```{r test, echo=TRUE, message=TRUE, warning=TRUE}
+print("DEBUG: NEW HEATMAP CODE RUNNING")
+```
 
 ```{r software_versions, bootstrap.show.message=FALSE, echo=FALSE, message=FALSE, eval=isProvided(params$path_software_versions)}
 # Import the .csv or .yml file output by the rna-seq Nextflow pipeline
