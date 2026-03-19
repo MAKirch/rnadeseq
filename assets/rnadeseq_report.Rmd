@@ -2492,6 +2492,7 @@ if (!require("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 BiocManager::install(params$species_library, lib=species_dir, version="3.17", force=T)
+#BiocManager::install(params$species_library, lib=species_dir, force=T)
 library(params$species_library, lib.loc=species_dir, character.only=T)
 species_library_installed <- get(params$species_library)
 
@@ -2909,22 +2910,33 @@ if (isProvided(params$path_genelist)){
         print("Plotting heatmaps...")
 
         # Reformat matrix so that it can be used by pheatmap (throws error if String columns/IDs are in the table)
-        rownames(mat) <- paste0(mat$Ensembl_ID, "_", mat$gene_name)
+        #rownames(mat) <- paste0(mat$Ensembl_ID, "_", mat$gene_name)
+        rownames(mat) <- mat$gene_name
         mat$gene_name <- NULL
         mat$Ensembl_ID <- NULL
         mat <- data.matrix(mat)
+        
+        width_png  <- max(800, ncol(mat) * 60)
+        height_png <- max(600, nrow(mat) * 20)
+        width_pdf  <- max(8, ncol(mat)*0.5)
+        height_pdf <- max(6, nrow(mat)*0.2)
+        
+        fontsize_row <- ifelse(nrow(mat) > 50, 4,
+                  ifelse(nrow(mat) > 30, 6, 8))
+
+        show_rownames <- nrow(mat) <= 60
 
         # Save matrix as table so that the values are accessible if heatmap plotting does not work properly
         write.table(mat, file=paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.tsv"), sep="\t", quote=F, row.names=F)
 
-        png(filename = paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.png"), width = 100+ncol(mat)*50, height = 50+nrow(mat)*100)
-        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows)
+        png(filename = paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.png"), width = width_png, height = height_png)
+        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
         dev.off()
-        pdf(paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.pdf"), width = 10+ncol(mat)*0.05, height = 5+nrow(mat)*0.005)
-        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows)
+        pdf(paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.pdf"), width = width_pdf, height = height_pdf)
+        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
         dev.off()
-        svg(paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.svg"), width = 10+ncol(mat)*0.1, height = 5+nrow(mat)*0.005)
-        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows)
+        svg(paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.svg"), width = width_pdf, height = height_pdf)
+        pheatmap(mat = mat, annotation_col = metadata_save, main = "Genelist-specific Heatmap of normalized expression values (z-scores) for genes", scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
         dev.off()
     }
 }
