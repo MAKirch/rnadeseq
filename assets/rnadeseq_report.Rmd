@@ -2816,8 +2816,8 @@ for (file in contrast_files){
                         fontsize_row <- ifelse(nrow(mat) > 50, 4,
                           ifelse(nrow(mat) > 30, 6, 8))
 
-                        show_rownames <- TRUE
-                        #show_rownames <- nrow(mat) <= 60
+                        #show_rownames <- TRUE
+                        show_rownames <- nrow(mat) <= 60
                         
                         main_title <- paste0(
                           "Heatmap of normalized expression values (z-scores)\n",
@@ -2942,8 +2942,8 @@ if (isProvided(params$path_genelist)){
         fontsize_row <- ifelse(nrow(mat) > 50, 4,
                   ifelse(nrow(mat) > 30, 6, 8))
 
-        #show_rownames <- nrow(mat) <= 60
-        show_rownames <- TRUE
+        show_rownames <- nrow(mat) <= 60
+        #show_rownames <- TRUE
 
         # Save matrix as table so that the values are accessible if heatmap plotting does not work properly
         write.table(mat, file=paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.tsv"), sep="\t", quote=F, row.names=F)
