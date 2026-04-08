@@ -2816,13 +2816,19 @@ for (file in contrast_files){
                         fontsize_row <- ifelse(nrow(mat) > 50, 4,
                           ifelse(nrow(mat) > 30, 6, 8))
 
-                        show_rownames <- nrow(mat) <= 60
+                        show_rownames <- TRUE
+                        #show_rownames <- nrow(mat) <= 60
+                        
+                        main_title <- paste0(
+                          "Heatmap of normalized expression values (z-scores)\n",
+                          "Pathway: ", pathway$short_name, " (", pathway$source, ")"
+                        )
 
                         # Because the image devices sometimes don't work here, surround them with a tryCatch so that the code continues even if a certain heatmap is not saved
                         tryCatch(
                             {
                                 png(filename = paste0("enrichment_analysis", "/",fname, "/", "heatmaps", "/", "Heatmap_normalized_counts_", pathway$source, "_", make.names(pathway$term_id), ".png"), width = width_png, height = height_png)
-                                pheatmap(mat = mat, annotation_col = metadata_save, main = paste("Heatmap of normalized expression values (z-scores) for genes in pathway ", pathway$short_name, "(",pathway$source,")",sep=" "), scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
+                                pheatmap(mat = mat, annotation_col = metadata_save, main = main_title, scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
                                 dev.off()
                             },
                             error=function(e) {
@@ -2832,7 +2838,7 @@ for (file in contrast_files){
                         tryCatch(
                             {
                                 pdf(paste0("enrichment_analysis", "/", fname, "/", "heatmaps", "/", "Heatmap_normalized_counts_", pathway$source, "_", make.names(pathway$term_id), ".pdf"), width = width_pdf, height = height_pdf)
-                                pheatmap(mat = mat, annotation_col = metadata_save, main = paste("Heatmap of normalized expression values (z-scores) for genes in pathway ", pathway$short_name, "(",pathway$source,")",sep=" "), scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
+                                pheatmap(mat = mat, annotation_col = metadata_save, main = main_title, scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
                                 dev.off()
                             },
                             error=function(e) {
@@ -2842,7 +2848,7 @@ for (file in contrast_files){
                         tryCatch(
                             {
                                 svg(paste0("enrichment_analysis", "/", fname, "/", "heatmaps", "/", "Heatmap_normalized_counts_", pathway$source, "_", make.names(pathway$term_id), ".svg"), width = width_pdf, height = height_pdf)
-                                pheatmap(mat = mat, annotation_col = metadata_save, main = paste("Heatmap of normalized expression values (z-scores) for genes in pathway ", pathway$short_name, "(",pathway$source,")",sep=" "), scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
+                                pheatmap(mat = mat, annotation_col = metadata_save, main = main_title, scale = "row", cluster_cols = params$heatmaps_cluster_cols, cluster_rows = params$heatmaps_cluster_rows, fontsize_row = fontsize_row, show_rownames = show_rownames)
                                 dev.off()
                             },
                             error=function(e) {
@@ -2936,7 +2942,8 @@ if (isProvided(params$path_genelist)){
         fontsize_row <- ifelse(nrow(mat) > 50, 4,
                   ifelse(nrow(mat) > 30, 6, 8))
 
-        show_rownames <- nrow(mat) <= 60
+        #show_rownames <- nrow(mat) <= 60
+        show_rownames <- TRUE
 
         # Save matrix as table so that the values are accessible if heatmap plotting does not work properly
         write.table(mat, file=paste0(genelist_heatmaps_dir, "/", "Heatmap_normalized_counts_gene_list.tsv"), sep="\t", quote=F, row.names=F)
